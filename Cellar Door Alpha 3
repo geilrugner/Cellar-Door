@@ -1,0 +1,310 @@
+# CellarDoor Alpha v3
+# Date May 25, 2022
+
+# Changelog Alpha v3: f-strings, maxhp heal check, inventory, items, mana check, mana regen?
+# Changelog Alpha v2: added functions, reworked combat, reworked player input
+
+# Roadmap: functions and better if-else checks, colored text
+# Stretch goals: sound, music, graphics
+
+# imports
+import time
+import sys
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout
+
+# variables
+# player stats
+name = "default playername"
+move = "Hier sollte nix sein, reiner input"
+move_ok = ["Forward", "forward", "Back", "back", "Left", "left", "Right", "right"]
+atkok = ["Attack", "attack", "ATTACK"]
+fireok = ["Fire", "fire", "FIRE"]
+healok = ["Heal", "heal", "HEAL"]
+hp = 60
+maxhp = 60
+mana = 20
+atk = 10
+spellfire = 50
+firecost = 10
+spellheal = 20
+healcost = 5
+# dungeon
+dungaction = "INPUT"
+itemok = ["Item", "item", "ITEM"]
+lookok = ["Look", "look", "LOOK"]
+gook = ["Go", "go", "GO"]
+
+# items
+healpots = 0
+healpotsheal = 20
+dagger = 0
+daggerdmg = atk + 5
+
+# snake stats
+snakehp = 100
+snakeatk = 5
+
+# game stats
+turn = 0
+textscrollspeed = 0.03
+outrowinattack = ("\nThe once mighty serpent lies slain in your cellar and will disturb you no more."
+                  "\nWith this victory, you can look towards a bright future. Is the spell finally broken...?"
+                  "\nGarrash leaves behind a POTION and a DAGGER. You greedily collect both.")
+
+outrowinfire = ("\nThe burnt husk of the snake creature lies motionless and shall never cross you again."
+                "\nWith this victory, you can look towards a bright future. Is the spell finally broken...?"
+                "\nGarrash leaves behind a POTION and a DAGGER. You greedily collect both.")
+
+outroloss = ("\nYour body collapses to the floor as your light fades from your eyes."
+             "\nIn theory, this should not be possible. How did you manage to let your HP reach 0...?")
+
+# functions
+# def scrolltext():
+#    global textscrollspeed
+#    print(x, end="")
+#    sys.stdout.flush()
+#    time.sleep(textscrollspeed)
+
+
+def gamewindow():
+    # WIP TBD
+    if __name__ == '__main__':
+        app = QApplication(sys.argv)
+        w = QWidget()
+        layout = QHBoxLayout()
+        btn = QPushButton("Descend.")
+        layout.addWidget(btn)
+        w.setLayout(layout)
+        w.resize(600, 600)
+        w.move(300, 300)
+        w.setWindowTitle("CELLAR DOOR")
+        w.show()
+        intro_funk()
+        sys.exit(app.exec_())
+
+
+def attack_funk():
+    global hp
+    global snakehp
+    snakehp = snakehp - atk
+    if snakehp < 1:
+        snake_defeat_attack()
+    print(F"You strike the reptile and deal {atk} damage.")
+    hp = hp - snakeatk
+    if hp < 1:
+        death_funk()
+    print(F"The reptile sinks its teeth into your flesh. You feel your life force draining.")
+    combat_loop_funk()
+
+
+def fire_funk():
+    global hp
+    global mana
+    global snakehp
+    if mana < firecost:
+        print(f"You chant the FIRE spell but your mana does not respond.")
+    else:
+        mana = mana - firecost
+        snakehp = snakehp - spellfire
+        print(F"You envelop the reptile in flames and deal {spellfire} damage.")
+    if snakehp < 1:
+        snake_defeat_fire()
+    hp = hp - snakeatk
+    print(F"The reptile sinks its teeth into your flesh. You feel your life force draining.")
+    if hp < 1:
+        death_funk()
+    combat_loop_funk()
+
+
+def heal_funk():
+    global mana
+    global maxhp
+    global hp
+    if mana < healcost:
+        print(f"You chant the HEAL spell but your mana does not respond.")
+    elif maxhp - hp < 20 and maxhp - hp > 0:
+        hp = 60
+        mana = mana - healcost
+        print(F"You feel a light around you and restore {maxhp - hp} life.")
+    elif maxhp == hp:
+        print(F"You feel a light around you but it fades with no effect. You reflect on past mistakes.")
+    else:
+        hp = hp + spellheal
+        mana = mana - healcost
+        print(F"You feel a warm light around you and restore {spellheal} life.")
+    hp = hp - snakeatk
+    if hp < 1:
+        death_funk()
+    print(F"The reptile sinks its teeth into your flesh. You feel your life force draining.")
+    combat_loop_funk()
+
+
+def healpotion_funk():
+    global healpots
+    global maxhp
+    global hp
+    if maxhp - hp < 20:
+        hp = 60
+        print(F"The cold, stale liquid flows into your stomach and restores {maxhp-hp} life.")
+    elif maxhp == hp:
+        print(F"Your noble desire to stay hydrated is offset as you waste a healing potion.")
+    else:
+        healpots = healpots - 1
+        hp = hp + 20
+        print(F"The cold, stale liquid flows into your stomach and restores {healpotsheal} life.")
+
+
+def death_funk():
+    # this SHOULD never happen because the player can only attack/fire/heal
+    global outroloss
+    for x in outroloss:
+        print(x, end="")
+        sys.stdout.flush()
+        time.sleep(textscrollspeed)
+    time.sleep(5)
+    quit()
+
+
+def snake_defeat_attack():
+    global outrowinattack
+    global healpots
+    global dagger
+    for x in outrowinattack:
+        print(x, end="")
+        sys.stdout.flush()
+        time.sleep(textscrollspeed)
+    healpots = healpots + 1
+    dagger = dagger + 1
+    time.sleep(5)
+    dungeonloop_funk()
+
+
+def snake_defeat_fire():
+    global outrowinfire
+    global healpots
+    global dagger
+    for x in outrowinfire:
+        print(x, end="")
+        sys.stdout.flush()
+        time.sleep(textscrollspeed)
+    healpots = healpots + 1
+    dagger = dagger + 1
+    time.sleep(5)
+    dungeonloop_funk()
+
+
+def combat_loop_funk():
+    global turn
+    turn = turn + 1
+    print(F"Turn: {turn}")
+    print(F"Life: {hp}")
+    print(F"Magic: {mana}")
+    print(F"Whisper back to me and we shall defeat the beast...")
+    answ_action = 0
+    action = input("Attack, Fire, or Heal?")
+    while answ_action == 0:
+        if action in atkok:
+            answ_action = 1
+            attack_funk()
+        elif action in fireok:
+            answ_action = 1
+            fire_funk()
+        elif action in healok:
+            answ_action = 1
+            heal_funk()
+        else:
+            print("I do not know this word. Speak to me again. Attack, Fire, or Heal?")
+            action = input()
+
+
+def snake_funk():
+    global turn
+    time.sleep(2)
+    print(F"\nHear me, {name}. Your life force is {hp} and your magic power is {mana}.")
+    print(F"Your might is {atk} and you have knowledge of two spells, Fire and Heal.")
+    combat_loop_funk()
+
+
+def intro_funk():
+    time.sleep(1)
+    global name
+    global move
+
+    intro1 = ("\nYou stand in front of the door to your cellar. For the past few days, you have heard strange"
+              "\nsounds downstairs. Unsure what you might find, you decide to descend into the cold darkness."
+              "\nEnter your name, so that you may be remembered:")
+    print("CellarDoor Alpha v3")
+    for x in intro1:
+        print(x, end="")
+        sys.stdout.flush()
+        time.sleep(textscrollspeed)
+    name = input("")
+
+    time.sleep(1)
+    intro2 = ("\nYour feet guide you, step by step. You have brought a torch but the light does not reach very far."
+              "\nYou discern this to be unnatural. Your torch struggles to illuminate even your immediate surroundings."
+              "\nFinally, you reach the bottom. Feet firmly planted on a stone floor.")
+    for x in intro2:
+        print(x, end="")
+        sys.stdout.flush()
+        time.sleep(textscrollspeed)
+    move = input("\nWhisper 'Forward' to proceed:")
+    # kein echter check, geht immer weiter
+
+    time.sleep(1)
+    intro3 = ("\nSuddenly, a flash of light. As you regain your vision, your worst fears are realized."
+              "\nBe strong, " + name + ". You face none other than Garrash, the venomous serpent of unrealized desires."
+              "\nAs you prepare for combat, a faint voice whispers to you...\n")
+    for x in intro3:
+        print(x, end="")
+        sys.stdout.flush()
+        time.sleep(textscrollspeed)
+
+
+def dungeonloop_funk():
+    global dungaction
+    dungeonlooptext = ("\nYou are alone with your thoughts and feelings. You still hear a faint voice." 
+                       "\nYou feel that you can whisper the following commands:"
+                       "\nInspect ITEMS."
+                       "\nLOOK around."
+                       "\nGO deeper.")
+    for x in dungeonlooptext:
+        print(x, end="")
+        sys.stdout.flush()
+        time.sleep(textscrollspeed)
+    answ_dungeon = 0
+    dungaction = input("")
+    while answ_dungeon == 0:
+        if dungaction in itemok:
+            answ_dungeon = 1
+            print(f"\nYou carry a DAGGER which allows you to deal 5 additional damage for a total of {daggerdmg}."
+                  f"\nYou carry a POTION made of a stale liquid. It might restore {healpotsheal} life when needed.")
+
+        elif dungaction in lookok:
+            answ_dungeon = 1
+            print(f"\nYou have descended into your cellar and are standing on the cold ground made from stone."
+                  "\nAs far as you can tell, the walls and ceilings are also made from stone."
+                  "\nThe corpse of GARRASH is the only noteworthy presence in this part of the cellar.")
+
+        elif dungaction in gook:
+            answ_dungeon = 1
+            print(f"You have decided to descend deeper into the cellar. You leave behind GARRASH, the dead serpent.")
+
+        else:
+            print("I do not know this word. Speak to me again.")
+            dungaction = input()
+
+
+# !! ACTUAL GAME STARTS HERE !!
+intro_funk()
+
+# Garrash snake intro battle
+snake_funk()
+
+# Dungeon loop
+dungeonloop_funk()
+
+# crash
+print("Game ended for some reason. Game will close in a few seconds.")
+time.sleep(15)
+quit()
