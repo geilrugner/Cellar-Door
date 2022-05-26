@@ -1,0 +1,170 @@
+# CellarDoor Alpha v2
+# Date May 23, 2022
+# Changelog: added functions, reworked combat, reworked player input
+
+# Roadmap: functions and better if-else checks, colored text
+# Stretch goals: sound, music, graphics
+
+# imports
+import time
+import sys
+
+# variables
+# player stats
+name = "playername"
+hp = 60
+mana = 20
+atk = 10
+spellfire = 50
+firecost = 10
+spellheal = 20
+healcost = 5
+
+# snake stats
+snakehp = 100
+snakeatk = 5
+
+# game stats
+turn = 0
+outrowin = ("\nThe once mighty serpent lies slain in your cellar and will disturb you no more."
+            "\nWith this victory, you can look towards a bright future. Is the spell finally broken...?"
+            "\nThank you for playing the Alpha version of CellarDoor.")
+
+outroloss = ("\nYour body collapses to the floor as your light fades from your eyes."
+             "\nIn theory, this should not be possible. How did you manage to let your HP reach 0...?")
+
+# functions
+def attack_funk():
+    global snakehp
+    snakehp = snakehp - atk
+    if snakehp == 0:
+        # it would be cool to have a different text depending on whether you killed it with atk or fire
+        for x in outrowin:
+            print(x, end="")
+            sys.stdout.flush()
+            time.sleep(0.1)
+        time.sleep(5)
+        quit()
+    print("You strike the reptile and deal " + str(atk) + " damage.")
+    global hp
+    hp = hp - snakeatk
+    if hp == 0:
+        # this SHOULD never happen because the player can only atk or use fire or heal
+        # even if you only atk for 10 turns the player will survive
+        for x in outroloss:
+            print(x, end="")
+            sys.stdout.flush()
+            time.sleep(0.1)
+        time.sleep(5)
+        quit()
+    print("The reptile sinks its teeth into your flesh. You feel your life force draining...")
+
+def fire_funk():
+    global mana
+    global snakehp
+    mana = mana - firecost
+    snakehp = snakehp - spellfire
+    print("You envelop the reptile in flames and deal " + str(spellfire) + " damage.")
+    global hp
+    hp = hp - snakeatk
+    if hp == 0:
+        death_funk()
+    print("The reptile sinks its teeth into your flesh. You feel your life force draining...")
+
+def heal_funk():
+    global mana
+    mana = mana - healcost
+    global hp
+    hp = hp + spellheal
+    print("You feel a warm light and restore " + str(spellheal) + " life.")
+    hp = hp - snakeatk
+    if hp == 0:
+        # this SHOULD never happen because the player can only atk or use fire or heal
+        # even if you only atk for 10 turns the player will survive
+        for x in outroloss:
+            print(x, end="")
+            sys.stdout.flush()
+            time.sleep(0.1)
+        time.sleep(5)
+        quit()
+    print("The reptile sinks its teeth into your flesh. You feel your life force draining...")
+
+def death_funk():
+    if hp == 0:
+        # this SHOULD never happen because the player can only atk or use fire or heal
+        # even if you only atk for 10 turns the player will survive
+        for x in outroloss:
+            print(x, end="")
+            sys.stdout.flush()
+            time.sleep(0.1)
+        time.sleep(5)
+        quit()
+
+def snake_defeat():
+     if snakehp == 0:
+        # it would be cool to have a different text depending on whether you killed it with atk or fire
+        for x in outrowin:
+            print(x, end="")
+            sys.stdout.flush()
+            time.sleep(0.1)
+        time.sleep(5)
+        quit()
+
+def combat_loop_funk():
+    global turn
+    turn = turn + 1
+    action = input("Whisper back to me and we shall defeat the beast: Attack, Fire, or Heal? ")
+    if action == "Attack":
+        attack_funk()
+    elif action == "Fire":
+        fire_funk()
+    elif action == "Heal":
+        heal_funk()
+
+def intro_funk():
+    time.sleep(1)
+    global name
+    intro1 = ("\nYou stand in front of the door to your cellar. For the past few days, you have heard strange"
+          "\nsounds downstairs. Unsure what you might find, you decide to descend into the cold darkness."
+          "\nEnter your name, so that you may be remembered:")
+    print("CellarDoor Alpha 0.1, 23-05-2022")
+    for x in intro1:
+        print(x, end='')
+        sys.stdout.flush()
+        time.sleep(0.1)
+    name = input("")
+
+    time.sleep(1)
+    intro2 = ("\nYour feet guide you, step by step. You have brought a torch but the light does not reach very far."
+          "\nYou discern this to be unnatural. Your torch struggles to illuminate even your immediate surroundings."
+          "\nFinally, you reach the bottom. Feet firmly planted on a stone floor.")
+    for x in intro2:
+        print(x, end='')
+        sys.stdout.flush()
+        time.sleep(0.1)
+
+time.sleep(1)
+intro3 = ("\nSuddenly, a flash of light. As you regain your vision, your worst fears are realized."
+          "\nBe strong, " + name + ". You face none other than Garrash, the venomous serpent of unfinished projects."
+          "\nAs you prepare for combat, a faint voice whispers to you...\n")
+for x in intro3:
+    print(x, end='')
+    sys.stdout.flush()
+    time.sleep(0.1)
+
+# ACTUAL GAME STARTS HERE
+intro_funk()
+
+# Garrash snake intro battle
+time.sleep(2)
+print("\nHear me, " + name + ". Your life force is " + str(hp) + " and your magic power is " + str(mana) + ".")
+print("Your might is " + str(atk) + " and you have knowledge of two spells, Fire and Heal.")
+
+turn = turn + 1
+print("\nTurn " + str(turn))
+print("!!Alpha version!! Just use Fire two times in a row to see the full game.")
+action = input("Whisper back to me and we shall defeat the beast: Attack, Fire, or Heal? ")
+
+
+
+
