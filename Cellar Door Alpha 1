@@ -1,0 +1,211 @@
+# CellarDoor Alpha 0.1
+# Date May 23, 2022
+# Roadmap: functions and better if-else checks, colored text
+# Stretch goals: sound, music, graphics
+import time
+import sys
+
+
+time.sleep(1)
+intro1 = ("\nYou stand in front of the door to your cellar. For the past few days, you have heard strange"
+          "\nsounds downstairs. Unsure what you might find, you decide to descend into the cold darkness."
+          "\nEnter your name, so that you may be remembered:")
+print("CellarDoor Alpha 0.1, 23-05-2022")
+for x in intro1:
+    print(x, end='')
+    sys.stdout.flush()
+    time.sleep(0.1)
+name = input("")
+
+time.sleep(1)
+intro2 = ("\nYour feet guide you, step by step. You have brought a torch but the light does not reach very far."
+          "\nYou discern this to be unnatural. Your torch struggles to illuminate even your immediate surroundings."
+          "\nFinally, you reach the bottom. Feet firmly planted on a stone floor.")
+for x in intro2:
+    print(x, end='')
+    sys.stdout.flush()
+    time.sleep(0.1)
+
+time.sleep(1)
+intro3 = ("\nSuddenly, a flash of light. As you regain your vision, your worst fears are realized."
+          "\nBe strong, " + name + ". You face none other than Garrash, the venomous serpent of unfinished projects."
+          "\nAs you prepare for combat, a faint voice whispers to you...\n")
+for x in intro3:
+    print(x, end='')
+    sys.stdout.flush()
+    time.sleep(0.1)
+
+outrowin = ("\nThe once mighty serpent lies slain in your cellar and will disturb you no more."
+            "\nWith this victory, you can look towards a bright future. Is the spell finally broken...?"
+            "\nThank you for playing the Alpha version of CellarDoor.")
+
+outroloss = ("\nYour body collapses to the floor as your light fades from your eyes."
+             "\nIn theory, this should not be possible. How did you manage to let your HP reach 0...?")
+
+# player stats
+hp = 60
+mana = 20
+atk = 10
+spellfire = 50
+firecost = 10
+spellheal = 20
+healcost = 5
+
+# snake stats
+snakehp = 100
+snakeatk = 5
+
+# game stats
+turn = 0
+
+# TURN 1
+# no condition hp or mana checks for first turn
+time.sleep(2)
+print("\nHear me, " + name + ". Your life force is " + str(hp) + " and your magic power is " + str(mana) + ".")
+print("Your might is " + str(atk) + " and you have mastered two spells, Fire and Heal.")
+
+turn = turn + 1
+print("\nTurn " + str(turn))
+print("!!Alpha version!! Just use Fire two times in a row to see the full game.")
+action = input("Whisper back to me and we shall defeat the beast: Attack, Fire, or Heal? ")
+
+time.sleep(1)
+# these actions could probably be functions, like atkfunction, firefunction, snakeatkfunc etc
+
+if action == "Attack":
+    snakehp = snakehp - atk
+    if snakehp == 0:
+        # it would be cool to have a different text depending on whether you killed it with atk or fire
+        for x in outrowin:
+            print(x, end='')
+            sys.stdout.flush()
+            time.sleep(0.1)
+        time.sleep(5)
+        quit()
+    print("You strike the reptile and deal " + str(atk) + " damage.")
+    hp = hp - snakeatk
+    if hp == 0:
+        # this SHOULD never happen because the player can only atk or use fire or heal
+        # even if you only atk for 10 turns the player will survive
+        for x in outroloss:
+            print(x, end='')
+            sys.stdout.flush()
+            time.sleep(0.1)
+        time.sleep(5)
+        quit()
+    print("The reptile sinks its teeth into your flesh. You feel your life force draining...")
+
+
+elif action == "Fire":
+    mana = mana - firecost
+    snakehp = snakehp - spellfire
+    if snakehp == 0:
+        # it would be cool to have a different text depending on whether you killed it with atk or fire
+        for x in outrowin:
+            print(x, end='')
+            sys.stdout.flush()
+            time.sleep(0.1)
+        time.sleep(5)
+        quit()
+    print("You envelop the reptile in flames and deal " + str(spellfire) + " damage.")
+    hp = hp - snakeatk
+    if hp == 0:
+        # this SHOULD never happen because the player can only atk or use fire or heal
+        # even if you only atk for 10 turns the player will survive
+        for x in outroloss:
+            print(x, end='')
+            sys.stdout.flush()
+            time.sleep(0.1)
+        time.sleep(5)
+        quit()
+    print("The reptile sinks its teeth into your flesh. You feel your life force draining...")
+
+elif action == "Heal":
+    mana = mana - healcost
+    hp = hp + spellheal
+    print("You feel a warm light and restore " + str(spellheal) + " life.")
+    hp = hp - snakeatk
+    if hp == 0:
+        # this SHOULD never happen because the player can only atk or use fire or heal
+        # even if you only atk for 10 turns the player will survive
+        for x in outroloss:
+            print(x, end='')
+            sys.stdout.flush()
+            time.sleep(0.1)
+        time.sleep(5)
+        quit()
+    print("The reptile sinks its teeth into your flesh. You feel your life force draining...")
+
+# TURN 2
+time.sleep(2)
+turn = turn + 1
+print("Turn " + str(turn) + ". Life: " + str(hp) + ", Mana: " + str(mana))
+action = input("Whisper back to me and we shall defeat the beast: Attack, Fire, or Heal? ")
+
+if action == "Attack":
+    snakehp = snakehp - atk
+    if snakehp == 0:
+        # it would be cool to have a different text depending on whether you killed it with atk or fire
+        for x in outrowin:
+            print(x, end='')
+            sys.stdout.flush()
+            time.sleep(0.1)
+        time.sleep(5)
+        quit()
+    print("You strike the reptile and deal " + str(atk) + " damage.")
+    hp = hp - snakeatk
+    if hp == 0:
+        # this SHOULD never happen because the player can only atk or use fire or heal
+        # even if you only atk for 10 turns the player will survive
+        for x in outroloss:
+            print(x, end='')
+            sys.stdout.flush()
+            time.sleep(0.1)
+        time.sleep(5)
+        quit()
+    print("The reptile sinks its teeth into your flesh. You feel your life force draining...")
+
+
+elif action == "Fire":
+    mana = mana - firecost
+    snakehp = snakehp - spellfire
+    if snakehp == 0:
+        # it would be cool to have a different text depending on whether you killed it with atk or fire
+        for x in outrowin:
+            print(x, end='')
+            sys.stdout.flush()
+            time.sleep(0.1)
+        time.sleep(5)
+        quit()
+    print("You envelop the reptile in flames and deal " + str(spellfire) + " damage.")
+    hp = hp - snakeatk
+    if hp == 0:
+        # this SHOULD never happen because the player can only atk or use fire or heal
+        # even if you only atk for 10 turns the player will survive
+        for x in outroloss:
+            print(x, end='')
+            sys.stdout.flush()
+            time.sleep(0.1)
+        time.sleep(5)
+        quit()
+    print("The reptile sinks its teeth into your flesh. You feel your life force draining...")
+
+elif action == "Heal":
+    mana = mana - healcost
+    hp = hp + spellheal
+    print("You feel a warm light and restore " + str(spellheal) + " life.")
+    hp = hp - snakeatk
+    if hp == 0:
+        # this SHOULD never happen because the player can only atk or use fire or heal
+        # even if you only atk for 10 turns the player will survive
+        for x in outroloss:
+            print(x, end='')
+            sys.stdout.flush()
+            time.sleep(0.1)
+        time.sleep(5)
+        quit()
+    print("The reptile sinks its teeth into your flesh. You feel your life force draining...")
+
+# TURN 3
+time.sleep(2)
+turn = turn + 1
