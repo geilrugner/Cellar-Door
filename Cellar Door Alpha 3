@@ -4,8 +4,8 @@
 # Changelog Alpha v3: f-strings, maxhp heal check, inventory, items, mana check, mana regen?
 # Changelog Alpha v2: added functions, reworked combat, reworked player input
 
-# Roadmap: functions and better if-else checks, colored text
-# Stretch goals: sound, music, graphics
+# Roadmap: functions and better if-else checks, colored ingame text, more player choices
+# Stretch goals: user interface, sound & music, graphics
 
 # imports
 import time
